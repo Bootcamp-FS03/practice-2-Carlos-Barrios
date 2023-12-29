@@ -8,6 +8,24 @@
     <link rel="stylesheet" href="tic-tac.toe.css">
 </head>
 <body>
+    <div class="container">
+        <h1>Tic Tac Toe</h1>
+
+        <form id="playerForm">
+            <label for="player1">Player 1:</label>
+            <input type="text" id="player1" placeholder="Enter name" minlength="3">
+
+            <label for="player2">Player 2:</label>
+            <input type="text" id="player2" placeholder="Enter name" minlength="3">
+
+            <button type="submit">Start Game</button>
+            <p id="errorMessage" class="error-message"></p>
+        </form>
+
+        <table id="gameBoard" style="display: none;">
+            
+        </table>
+    </div>
     <script src="./tic-tac-toe.js"></script>
 </body>
 </html>
