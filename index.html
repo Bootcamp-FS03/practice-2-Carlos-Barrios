@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,9 +8,10 @@
     <title>Document</title>
     <link rel="stylesheet" href="tic-tac.toe.css">
 </head>
+
 <body>
+    <h1>Tic Tac Toe</h1>
     <div class="container">
-        <h1>Tic Tac Toe</h1>
 
         <form id="playerForm">
             <label for="player1">Player 1:</label>
@@ -22,10 +24,29 @@
             <p id="errorMessage" class="error-message"></p>
         </form>
 
-        <table id="gameBoard" style="display: none;">
-            
-        </table>
+        <h2 id="turnInfo"></h2>
+
+        <div id="gameContainer" style="display: none;">
+            <table id="gameBoard">
+                <tr>
+                    <td class="cell"></td>
+                    <td class="cell"></td>
+                    <td class="cell"></td>
+                </tr>
+                <tr>
+                    <td class="cell"></td>
+                    <td class="cell"></td>
+                    <td class="cell"></td>
+                </tr>
+                <tr>
+                    <td class="cell"></td>
+                    <td class="cell"></td>
+                    <td class="cell"></td>
+                </tr>
+            </table>
+        </div>
     </div>
     <script src="./tic-tac-toe.js"></script>
 </body>
+
 </html>
