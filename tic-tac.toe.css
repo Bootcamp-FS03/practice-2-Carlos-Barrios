@@ -1,3 +1,18 @@
+:root {
+    --background-color: #f5f5f5;
+    --container-bg-color: #fff;
+    --box-shadow-color: #ccc;
+    --text-color: #333;
+    --button-bg-color: #4caf50;
+    --button-hover-bg-color: #45a049;
+    --input-border-color: #ccc;
+    --error-message-color: red;
+    --cell-border-color: #000;
+    --x-cell-color: #ff0000;
+    --o-cell-color: #0000ff;
+    --button-disabled-bg-color: #999;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     display: flex;
@@ -5,21 +20,21 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f5f5f5;
+    background-color: var(--background-color);
 }
 
 .container {
     text-align: center;
-    background-color: #fff;
+    background-color: var(--container-bg-color);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px #ccc;
+    box-shadow: 0 0 10px var(--box-shadow-color);
 }
 
 h1 {
     position: absolute;
     top: 20px;
-    color: #333;
+    color: var(--text-color);
 }
 
 #playerForm {
@@ -43,7 +58,7 @@ input {
     margin-bottom: 15px;
     width: 100%;
     box-sizing: border-box;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border-color);
     border-radius: 5px;
 }
 
@@ -51,39 +66,44 @@ button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #4caf50;
+    background-color: var(--button-bg-color);
     color: #fff;
     border: none;
     border-radius: 5px;
 }
 
-button:hover {
-    background-color: #45a049;
+button:hover:not(:disabled) {
+    background-color: var(--button-hover-bg-color);
+}
+
+button:disabled {
+    background-color: var(--button-disabled-bg-color);
+    cursor: not-allowed;
 }
 
 .error-message {
-    color: red;
+    color: var(--error-message-color);
 }
 
 #gameBoard {
     display: table;
     border-collapse: collapse;
+    margin-bottom: 20px;
 }
 
 #gameBoard td {
-    border: 5px solid #000;
+    border: 5px solid var(--cell-border-color);
     width: 100px;
     height: 100px;
     text-align: center;
-    font-size: 24px;
     font-size: 50px;
     font-weight: bold;
 }
 
 #gameBoard td.x-cell {
-    color: #ff0000;
+    color: var(--x-cell-color);
 }
 
 #gameBoard td.o-cell {
-    color: #0000ff;
+    color: var(--o-cell-color);
 }

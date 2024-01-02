@@ -13,87 +13,106 @@
 // DESIRABLE
 // 6. ADD THE ABILITY TO SELECT THE TABLE DIMENSION 3X3, 4X4, 5X5, ETC
 
-let isGameActive = false;
-let player1Name;
-let player2Name;
-let currentPlayer;
+(() => {
 
-const playerForm = document.getElementById('playerForm');
-const gameBoard = document.getElementById('gameBoard');
-const gameContainer = document.getElementById('gameContainer');
-const turnInfo = document.getElementById('turnInfo');
+    let isGameActive = false;
+    let player1Name;
+    let player2Name;
+    let currentPlayer;
 
-function initializeGameBoard() {
-    const cells = document.querySelectorAll('.cell');
-    cells.forEach(cell => {
-        cell.textContent = '';
-        cell.addEventListener('click', handleCellClick);
-    });
-}
+    const playerForm = document.getElementById('playerForm');
+    const gameBoard = document.getElementById('gameBoard');
+    const gameContainer = document.getElementById('gameContainer');
+    const turnInfo = document.getElementById('turnInfo');
+    const restartButton = document.getElementById('restartButton');
 
-document.getElementById('playerForm').addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    player1Name = document.getElementById('player1').value;
-    player2Name = document.getElementById('player2').value;
-
-    if (player1Name && player2Name && player1Name !== player2Name) {
-        playerForm.style.display = 'none';
-        gameContainer.style.display = 'block';
-        isGameActive = true;
-        initializeGameBoard();
-
-        currentPlayer = Math.random() < 0.5 ? player1Name : player2Name;
-        turnInfo.innerText = `${currentPlayer} turn(${currentPlayer === player1Name ? 'X' : 'O'})`;      
-
-    } else if (!player1Name || !player2Name) {
-        document.getElementById('errorMessage').innerText = 'Enter names for both players';
-    } else {
-        document.getElementById('errorMessage').innerText = 'Player names should be different';
+    function initializeGameBoard() {
+        const cells = document.querySelectorAll('.cell');
+        cells.forEach(cell => {
+            cell.textContent = '';
+            cell.addEventListener('click', handleCellClick);
+        });
     }
-});
 
-function handleCellClick(event) {
-    if (isGameActive && event.target.textContent === '') {
-        const selectedCell = event.target;
-        selectedCell.textContent = currentPlayer === player1Name ? 'X' : 'O';
+    document.getElementById('playerForm').addEventListener('submit', function (event) {
+        event.preventDefault();
 
-        selectedCell.classList.remove('x-cell', 'o-cell');
+        player1Name = document.getElementById('player1').value.trim();
+        player2Name = document.getElementById('player2').value.trim();
 
-        selectedCell.classList.add(currentPlayer === player1Name ? 'x-cell' : 'o-cell');
+        if (player1Name && player2Name && player1Name !== player2Name) {
+            playerForm.style.display = 'none';
+            gameContainer.style.display = 'block';
+            isGameActive = true;
+            initializeGameBoard();
 
-        if (checkWinner()) {
-            console.log(`¡${currentPlayer} won!`);
-            isGameActive = false;
-        } else if (checkTie()) {
-            console.log('¡It´s a tie!');
-            isGameActive = false;
+            currentPlayer = Math.random() < 0.5 ? player1Name : player2Name;
+            turnInfo.innerText = `${currentPlayer} turn(${currentPlayer === player1Name ? 'X' : 'O'})`;
+
+        } else if (!player1Name || !player2Name) {
+            document.getElementById('errorMessage').innerText = 'Enter names for both players';
         } else {
-            currentPlayer = currentPlayer === player1Name ? player2Name : player1Name;
-            turnInfo.innerText = `${currentPlayer} turn (${currentPlayer === player1Name ? 'X' : 'O'})`;
+            document.getElementById('errorMessage').innerText = 'Player names should be different';
+        }
+    });
+
+    function handleCellClick(event) {
+        if (isGameActive && event.target.textContent === '') {
+            const selectedCell = event.target;
+            selectedCell.textContent = currentPlayer === player1Name ? 'X' : 'O';
+
+            selectedCell.classList.remove('x-cell', 'o-cell');
+
+            selectedCell.classList.add(currentPlayer === player1Name ? 'x-cell' : 'o-cell');
+
+            if (checkWinner()) {
+                console.log(`¡${currentPlayer} won!`);
+                document.getElementById('winnerMessage').innerText = `${currentPlayer} won`;
+                isGameActive = false;
+            } else if (checkTie()) {
+                console.log('¡It´s a tie!');
+                document.getElementById('winnerMessage').innerText = 'It´s a tie';
+                isGameActive = false;
+            } else {
+                currentPlayer = currentPlayer === player1Name ? player2Name : player1Name;
+                turnInfo.innerText = `${currentPlayer} turn (${currentPlayer === player1Name ? 'X' : 'O'})`;
+            }
+
+            if(!isGameActive){
+                restartButton.disabled = false;
+            }
         }
     }
-}
 
-function checkWinner() {
-    const cells = document.querySelectorAll('.cell');
-    const winPatterns = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
-        [0, 4, 8], [2, 4, 6]             // Diagonales
-    ];
+    function checkWinner() {
+        const cells = document.querySelectorAll('.cell');
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
+            [0, 4, 8], [2, 4, 6]             // Diagonales
+        ];
 
-    return winPatterns.some(pattern => {
-        const [a, b, c] = pattern;
-        return (
+        return winPatterns.some(([a, b, c]) =>
+        (
             cells[a].textContent !== '' &&
             cells[a].textContent === cells[b].textContent &&
             cells[b].textContent === cells[c].textContent
+        )
         );
-    });
-}
+    }
 
-function checkTie() {
-    const cells = document.querySelectorAll('.cell');
-    return Array.from(cells).every(cell => cell.textContent !== '');
-}
+    function checkTie() {
+        const cells = document.querySelectorAll('.cell');
+        return Array.from(cells).every(cell => cell.textContent !== '');
+    }
+
+    restartButton.addEventListener('click', function(){
+        isGameActive = true;
+        initializeGameBoard();
+        document.getElementById('winnerMessage').innerText = '';
+        currentPlayer = currentPlayer === player1Name ? player2Name : player1Name;
+        turnInfo.innerText = `${currentPlayer} turn(${currentPlayer === player1Name ? 'X' : 'O'})`;
+        restartButton.disabled = true;
+    });
+
+})();
