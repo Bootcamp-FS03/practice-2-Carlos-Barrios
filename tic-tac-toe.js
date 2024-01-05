@@ -19,6 +19,7 @@
     let player1Name;
     let player2Name;
     let currentPlayer;
+    let boardSize;
 
     const playerForm = document.getElementById('playerForm');
     const gameBoard = document.getElementById('gameBoard');
@@ -27,11 +28,16 @@
     const restartButton = document.getElementById('restartButton');
 
     function initializeGameBoard() {
-        const cells = document.querySelectorAll('.cell');
-        cells.forEach(cell => {
-            cell.textContent = '';
-            cell.addEventListener('click', handleCellClick);
-        });
+        gameBoard.innerHTML = '';
+
+        for (let i = 0; i < boardSize; i++) {
+            const row = gameBoard.insertRow();
+            for (let j = 0; j < boardSize; j++) {
+                const cell = row.insertCell();
+                cell.classList.add('cell');
+                cell.addEventListener('click', handleCellClick, { once: true });
+            }
+        }
     }
 
     document.getElementById('playerForm').addEventListener('submit', function (event) {
@@ -39,6 +45,7 @@
 
         player1Name = document.getElementById('player1').value.trim();
         player2Name = document.getElementById('player2').value.trim();
+        boardSize = parseInt(document.getElementById('boardSize').value);
 
         if (player1Name && player2Name && player1Name !== player2Name) {
             playerForm.style.display = 'none';
@@ -78,7 +85,7 @@
                 turnInfo.innerText = `${currentPlayer} turn (${currentPlayer === player1Name ? 'X' : 'O'})`;
             }
 
-            if(!isGameActive){
+            if (!isGameActive) {
                 restartButton.disabled = false;
             }
         }
@@ -86,19 +93,14 @@
 
     function checkWinner() {
         const cells = document.querySelectorAll('.cell');
-        const winPatterns = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
-            [0, 4, 8], [2, 4, 6]             // Diagonales
-        ];
+        const winPatterns = getWinPatterns();
 
-        return winPatterns.some(([a, b, c]) =>
-        (
-            cells[a].textContent !== '' &&
-            cells[a].textContent === cells[b].textContent &&
-            cells[b].textContent === cells[c].textContent
-        )
-        );
+        return winPatterns.some(pattern => {
+            const line = pattern.map(index => cells[index].textContent);
+            const firstCell = line[0];
+
+            return firstCell !== '' && line.every(cell => cell === firstCell);
+        });
     }
 
     function checkTie() {
@@ -106,7 +108,20 @@
         return Array.from(cells).every(cell => cell.textContent !== '');
     }
 
-    restartButton.addEventListener('click', function(){
+    function getWinPatterns() {
+        const patterns = [];
+        for (let i = 0; i < boardSize; i++) {
+            patterns.push(Array.from({ length: boardSize }, (_, j) => i * boardSize + j));
+            patterns.push(Array.from({ length: boardSize }, (_, j) => i + j * boardSize));
+        }
+
+        patterns.push(Array.from({ length: boardSize }, (_, i) => i * (boardSize + 1)));
+        patterns.push(Array.from({ length: boardSize }, (_, i) => (i + 1) * (boardSize - 1)).reverse());
+
+        return patterns;
+    }
+
+    restartButton.addEventListener('click', function () {
         isGameActive = true;
         initializeGameBoard();
         document.getElementById('winnerMessage').innerText = '';
